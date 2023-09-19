@@ -5,6 +5,6 @@ services:
     volumes:
       - .:/root/workspace
       - vs-server:/root/.vscode-server/extensions
-
+      - /Users/amit/dev/source:/root/source
 volumes:
   vs-server: {}

@@ -1,0 +1,10 @@
+{
+    "basePath": [
+        "/",
+        "root",
+        "source"
+    ],
+    "repos": [
+        "tiny-utils"
+    ]
+}
