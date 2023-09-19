@@ -30,7 +30,20 @@ def git_status(repoPath):
     changedFiles = [item.a_path for item in repo.index.diff(None)]
     branch = repo.active_branch
     print(" - branch: " + branch.name)
-    print(" - changedFiles: " + str(changedFiles))
+
+    # If changed files is not empty, print the changed files
+    if len(changedFiles) > 0:
+        print(" - changedFiles: " + str(changedFiles))
+    
+    # If there are untracked files, print them
+    untrackedFiles = repo.untracked_files
+    if len(untrackedFiles) > 0:
+        print(" - untrackedFiles: " + str(untrackedFiles))
+    
+    # If there are uncommited changes, print them
+    if repo.is_dirty():
+        print(" - uncommited changes")
+
 
 # Check if the command is status
 # If it is, print the status of all repos
