@@ -20,7 +20,7 @@ if len(args) < 2:
 command = args[1]
 
 # Read the repolist json file
-with open("python/repolist.json", "r") as f:
+with open("repolist.json", "r") as f:
     repolist = json.load(f)
 
 def git_status(repoPath):
