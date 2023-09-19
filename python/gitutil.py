@@ -44,6 +44,21 @@ def git_status(repoPath):
     if repo.is_dirty():
         print(" - uncommited changes")
 
+    # Check if the branch is ahead of the remote
+    if len(list(repo.iter_commits('origin/' + branch.name + '..' + branch.name))) > 0:
+        print(" - branch is ahead of remote")
+
+    # Check if the branch is behind the remote
+    if len(list(repo.iter_commits(branch.name + '..' + 'origin/' + branch.name))) > 0:
+        print(" - branch is behind remote")
+    
+    # Check if the branch is diverged from the remote
+    if len(list(repo.iter_commits('origin/' + branch.name + '..' + branch.name))) > 0 and len(list(repo.iter_commits(branch.name + '..' + 'origin/' + branch.name))) > 0:
+        print(" - branch is diverged from remote")
+
+    # Check if the branch has been merged into the remote develop branch
+    if branch.name != "develop" and len(list(repo.iter_commits('origin/develop..' + branch.name))) != 0:
+        print(" - branch has not been merged into remote develop branch")
 
 # Check if the command is status
 # If it is, print the status of all repos
