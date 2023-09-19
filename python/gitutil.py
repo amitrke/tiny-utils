@@ -52,3 +52,23 @@ if command == "status":
     for repo in repolist["repos"]:
         git_status(os.path.join(*repolist["basePath"], repo))
 
+# Check if the command is checkout
+# If it is, checkout the specified branch in all repos
+
+if command == "checkout":
+    # Check if there are enough arguments
+    if len(args) < 3:
+        print("Usage: python gitutil.py checkout <branch>")
+        exit()
+    
+    # Get branch name
+    branch = args[2]
+
+    for repo in repolist["repos"]:
+        # Initialize existing repo
+        print("Repo: " + repo)
+        repo = Repo(os.path.join(*repolist["basePath"], repo))
+        print(" - branch: " + branch)
+
+        # Checkout the specified branch
+        repo.git.checkout(branch)
