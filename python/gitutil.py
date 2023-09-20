@@ -87,3 +87,14 @@ if command == "checkout":
 
         # Checkout the specified branch
         repo.git.checkout(branch)
+
+# Check if the command is fetch
+
+if command == "fetch":
+    for repo in repolist["repos"]:
+        # Initialize existing repo
+        print("Repo: " + repo)
+        repo = Repo(os.path.join(*repolist["basePath"], repo))
+
+        # Fetch from remote
+        repo.git.fetch()
