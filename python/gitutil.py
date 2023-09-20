@@ -98,3 +98,14 @@ if command == "fetch":
 
         # Fetch from remote
         repo.git.fetch()
+
+# Check if the command is pull
+
+if command == "pull":
+    for repo in repolist["repos"]:
+        # Initialize existing repo
+        print("Repo: " + repo)
+        repo = Repo(os.path.join(*repolist["basePath"], repo))
+
+        # Pull from remote
+        repo.git.pull()
