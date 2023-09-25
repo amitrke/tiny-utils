@@ -4,6 +4,9 @@ filename=$(date '+%Y-%m-%d_%H-%M-%S').tar.gz
 # PG Dump
 pg_dump -U $POSTGRES_USER -h $POSTGRES_HOST -p $POSTGRES_PORT $POSTGRES_DB > $filename
 
+# Replace the string "prd." with "uat." in the dump file
+sed -i 's/prd./uat./g' $filename
+
 # Compress file
 tar -zcvf $filename $filename
 
