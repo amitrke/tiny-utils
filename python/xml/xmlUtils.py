@@ -2,7 +2,8 @@ import xml.etree.ElementTree as ET
 
 #Sample student xml
 xmlDataLeft = """<?xml version="1.0" encoding="UTF-8"?>
-<students>
+<class>
+    <standard>1</standard>
     <student>
         <name>John</name>
         <age>20</age>
@@ -21,10 +22,11 @@ xmlDataLeft = """<?xml version="1.0" encoding="UTF-8"?>
             <zip>67890</zip>
         </address>
     </student>
-</students>"""
+</class>"""
 
 xmlDataRight = """<?xml version="1.0" encoding="UTF-8"?>
-<students>
+<class>
+    <standard>1</standard>
     <student>
         <name>Ron</name>
         <age>20</age>
@@ -43,7 +45,7 @@ xmlDataRight = """<?xml version="1.0" encoding="UTF-8"?>
             <zip>54321</zip>
         </address>
     </student>
-</students>"""
+</class>"""
 
 # Parse left xml you want to compare
 left = ET.fromstring(xmlDataLeft)
@@ -51,23 +53,25 @@ left = ET.fromstring(xmlDataLeft)
 # Parse right xml
 right = ET.fromstring(xmlDataRight)
 
-# Function to convert xml to dict recursively
-def xmlToDict(xmlElement: ET.Element):
-    # If xml element has no children, return the text
-    if len(xmlElement) == 0:
-        return xmlElement.text
-    # If xml element has children, create a dict
-    xmlDict = {}
-    # Loop through each child
-    for child in xmlElement:
-        # If child is a list, append it to the dict
-        if child.tag in xmlDict:
-            if type(xmlDict[child.tag]) is list:
-                xmlDict[child.tag].append(xmlToDict(child))
-            else:
-                xmlDict[child.tag] = [xmlDict[child.tag]]
-                xmlDict[child.tag].append(xmlToDict(child))
-        # If child is not a list, add it to the dict
-        else:
-            xmlDict[child.tag] = xmlToDict(child)
-    return xmlDict
+recordTagXPath = './/class/student'
+
+# Function to convert xml to list based on recordTagXPath
+def xmlToList(xml, recordTagXPath):
+    # Create empty list
+    list = []
+    # Find all records
+    records = xml.findall(recordTagXPath)
+    # Loop through records
+    for record in records:
+        # Create empty dictionary
+        dict = {}
+        # Find all fields
+        fields = record.findall('*')
+        # Loop through fields
+        for field in fields:
+            # Add field name and value to dictionary
+            dict[field.tag] = field.text
+        # Add dictionary to list
+        list.append(dict)
+    # Return list
+    return list
