@@ -1,3 +1,4 @@
 GitPython
 pysnow
 jira
+pika
