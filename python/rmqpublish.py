@@ -28,9 +28,12 @@ channel.queue_declare(queue=rmqQueue, durable=True)
 filename = sys.argv[1]
 
 # Publish the file to the queue
-channel.basic_publish(exchange=rmqExchange,
-                      routing_key='hello',
-                      body=open(filename).read())
+try:
+    channel.basic_publish(exchange=rmqExchange,
+                          routing_key='hello',
+                          body=open(filename).read())
+except Exception as e:
+    print(f"Error publishing message: {e}")
 
 # Close the connection
 connection.close()
