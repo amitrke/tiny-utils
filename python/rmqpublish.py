@@ -18,7 +18,7 @@ rmqExchange = os.environ.get('RMQ_EXCHANGE', '')
 cxt = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
 ssl_options = pika.SSLOptions(context=cxt, server_hostname=rmqHost)
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host=rmqHost, port=rmqPort, virtual_host=rmqVHost, credentials=pika.PlainCredentials(rmqUser, rmqPass), ssl=True, ssl_options=ssl_options))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host=rmqHost, port=rmqPort, virtual_host=rmqVHost, credentials=pika.PlainCredentials(rmqUser, rmqPass), ssl_options=ssl_options))
 channel = connection.channel()
 
 # Declare the queue
