@@ -22,7 +22,7 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(host=rmqHost, por
 channel = connection.channel()
 
 # Declare the queue
-channel.queue_declare(queue=rmqQueue)
+channel.queue_declare(queue=rmqQueue, durable=True)
 
 # Get the file name from the command line
 filename = sys.argv[1]
