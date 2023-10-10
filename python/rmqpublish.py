@@ -15,16 +15,8 @@ rmqPort = int(os.environ.get('RMQ_PORT', '5671'))
 rmqQueue = os.environ.get('RMQ_QUEUE', 'hello')
 rmqExchange = os.environ.get('RMQ_EXCHANGE', '')
 
-ssl_options = {
-    "ssl_version": ssl.PROTOCOL_TLSv1_2,
-    # "ca_certs": "/path/to/ca_certificate.pem",
-    # "certfile": "/path/to/client_certificate.pem",
-    # "keyfile": "/path/to/client_key.pem",
-    "cert_reqs": ssl.CERT_REQUIRED
-}
-
-# context = ssl.create_default_context(cafile=ssl_options['ca_certs'])
-# ssl_options["context"] = context
+cxt = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+ssl_options = pika.SSLOptions(context=cxt, server_hostname=rmqHost)
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(host=rmqHost, port=rmqPort, virtual_host=rmqVHost, credentials=pika.PlainCredentials(rmqUser, rmqPass), ssl=True, ssl_options=ssl_options))
 channel = connection.channel()
