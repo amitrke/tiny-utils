@@ -1,5 +1,6 @@
 # BEGIN: 5j8d9f3b4c5e
 import os
+from jira import JIRA
 
 options = {
     'server': os.environ.get('JIRA_SERVER_URL')
