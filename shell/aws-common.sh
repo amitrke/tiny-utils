@@ -6,6 +6,16 @@ loadBalancerDNS=aws elbv2 describe-load-balancers \
   | sed 's/.*\(k8s-.*\)/\1/'
 ```
 
+#Route 53
+hostedZoneName="test.helloworld.com"
+
+#Get hosted zone ID
+HOSTED_ZONE_ID=$(aws route53 list-hosted-zones-by-name \
+  --dns-name $hostedZoneName \
+  --query "HostedZones[0].Id" \
+  --output text \
+  | sed 's/.*\(Z.*\)/\1/')
+
 route53Record="nlb.$CLUSTER_NAME.$DOMAIN_NAME"
 
 #Update route53 DNS record
