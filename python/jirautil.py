@@ -15,6 +15,12 @@ print(issue.fields.project.key)            # 'JRA'
 print(issue.fields.issuetype.name)         # 'New Feature'
 print(issue.fields.reporter.displayName)   # 'Mike Cannon-Brookes [Atlassian]'
 
+project = jira.project('JRA')
+#Find the active sprints for a project
+sprints = jira.sprints(project.key, state='active')
+for sprint in sprints:
+    print('{}: {}'.format(sprint.id, sprint.name))
+
 # Find all the issues that I am currently working on
 issues = jira.search_issues('assignee = currentUser() and status not in (Closed, Resolved)', maxResults=100)
 for issue in issues:
