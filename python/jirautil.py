@@ -1,8 +1,59 @@
-# BEGIN: 5j8d9f3b4c5e
 import os
 from jira import JIRA
 from datetime import datetime, timedelta
 from typing import Optional
+
+options = {
+    'server': os.environ.get('JIRA_SERVER_URL')
+}
+
+email = os.environ.get('JIRA_EMAIL_ADDRESS')
+api_token = os.environ.get('JIRA_API_TOKEN')
+jira = JIRA(options, basic_auth=(email, api_token))
+
+def print_issue_details(issue):
+    print(issue.fields.project.key)            # 'JRA'
+    print(issue.fields.issuetype.name)         # 'New Feature'
+    print(issue.fields.reporter.displayName)   # 'Mike Cannon-Brookes [Atlassian]'
+
+def print_active_sprints(project_key):
+    boards = jira.boards(project_key)
+    boardId = 123
+
+    board = next(board for board in boards if board.id == boardId)
+
+    sprints = jira.sprints(board.id, state='active')
+    for sprint in sprints:
+        print('{}: {}'.format(sprint.id, sprint.name))
+
+def print_assigned_issues():
+    issues = jira.search_issues('assignee = currentUser() and status not in (Closed, Resolved)', maxResults=100)
+    for issue in issues:
+        print('{}: {}'.format(issue.key, issue.fields.summary))
+        worklogs = jira.worklogs(issue)
+        if worklogs:
+            worklog = worklogs[-1]
+            print('  Last worklog: {} - {}'.format(worklog.author, worklog.comment))
+            if worklog.started[:10] == datetime.now().strftime('%Y-%m-%d'):
+                print('  Last worklog was made today')
+            else:
+                print('  Last worklog was not made today')
+            yesterday = datetime.now() - timedelta(days=1)
+            if worklog.started[:10] == yesterday.strftime('%Y-%m-%d'):
+                print('  Last worklog was made yesterday')
+            else:
+                print('  Last worklog was not made yesterday')
+        else:
+            print('  No worklog entries')
+
+# Usage examples:
+issue = jira.issue('JRA-9')
+print_issue_details(issue)
+
+project_key = 'JRA'
+print_active_sprints(project_key)
+
+print_assigned_issues()
 
 options = {
     'server': os.environ.get('JIRA_SERVER_URL')
@@ -43,11 +94,40 @@ for issue in issues:
     print('{}: {}'.format(issue.key, issue.fields.summary))
     # Print the last worklog entry
     worklogs = jira.worklogs(issue)
-    if worklogs:
-        worklog = worklogs[-1]
-        print('  Last worklog: {} - {}'.format(worklog.author, worklog.comment))
-    else:
-        print('  No worklog entries')
+    options = {
+        'server': os.environ.get('JIRA_SERVER_URL')
+    }
+
+    email = os.environ.get('JIRA_EMAIL_ADDRESS')
+    api_token = os.environ.get('JIRA_API_TOKEN')
+    jira = JIRA(options, basic_auth=(email, api_token))
+        issues = jira.search_issues('assignee = currentUser() and status not in (Closed, Resolved)', maxResults=100)
+        for issue in issues:
+            print('{}: {}'.format(issue.key, issue.fields.summary))
+            worklogs = jira.worklogs(issue)
+            if worklogs:
+                worklog = worklogs[-1]
+                print('  Last worklog: {} - {}'.format(worklog.author, worklog.comment))
+                if worklog.started[:10] == datetime.now().strftime('%Y-%m-%d'):
+                    print('  Last worklog was made today')
+                else:
+                    print('  Last worklog was not made today')
+                yesterday = datetime.now() - timedelta(days=1)
+                if worklog.started[:10] == yesterday.strftime('%Y-%m-%d'):
+                    print('  Last worklog was made yesterday')
+                else:
+                    print('  Last worklog was not made yesterday')
+            else:
+                print('  No worklog entries')
+
+    # Usage examples:
+    issue = jira.issue('JRA-9')
+    print_issue_details(issue)
+
+    project_key = 'JRA'
+    print_active_sprints(project_key)
+
+    print_assigned_issues()
 
     #Print if the issue does not have a target end date
     if not issue.fields.duedate:
