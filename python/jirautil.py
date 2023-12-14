@@ -145,19 +145,20 @@ start_time_str = start_time.strftime('%Y-%m-%dT%H:%M:%S.000%z')
 # Log work for the issue
 add_worklog(issue, timeSpentSeconds, comment, started=start_time_str)
 
-def add_worklog(issue: 'JIRA.Issue', time_spent_seconds: int, comment: str, started: str) -> None:
+def add_worklog(issue: 'JIRA.Issue', time_spent_hours: float, started: str, comment: str = '') -> None:
     """
     Adds a worklog entry to an issue in JIRA if no worklog was present for the issue for the date of started.
 
     Parameters:
     - issue: The JIRA issue object to add the worklog to.
-    - time_spent_seconds: The time spent on the issue in seconds.
-    - comment: The comment for the worklog entry.
+    - time_spent_hours: The time spent on the issue in hours.
     - started: The start time of the worklog entry in JIRA's time format.
+    - comment: The comment for the worklog entry. (optional)
 
     Returns:
     - None
     """
+    time_spent_seconds = int(time_spent_hours * 3600)  # Convert hours to seconds
     worklogs = jira.worklogs(issue)
     for worklog in worklogs:
         if worklog.started[:10] == started[:10]:
