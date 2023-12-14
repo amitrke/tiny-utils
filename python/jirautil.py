@@ -2,6 +2,7 @@
 import os
 from jira import JIRA
 from datetime import datetime, timedelta
+from typing import Optional
 
 options = {
     'server': os.environ.get('JIRA_SERVER_URL')
@@ -64,7 +65,7 @@ start_time_str = start_time.strftime('%Y-%m-%dT%H:%M:%S.000%z')
 # Log work for the issue
 add_worklog(issue, timeSpentSeconds, comment, started=start_time_str)
 
-def add_worklog(issue, time_spent_seconds, comment, started):
+def add_worklog(issue: 'JIRA.Issue', time_spent_seconds: int, comment: str, started: str) -> None:
     """
     Adds a worklog entry to an issue in JIRA if no worklog was present for the issue for the date of started.
 
