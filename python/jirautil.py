@@ -17,9 +17,18 @@ print(issue.fields.reporter.displayName)   # 'Mike Cannon-Brookes [Atlassian]'
 
 project = jira.project('JRA')
 #Find the active sprints for a project
-sprints = jira.sprints(project.key, state='active')
+# sprints = jira.sprints(project.key, state='active')
+# for sprint in sprints:
+#     print('{}: {}'.format(sprint.id, sprint.name))
+
+#Jira Agile board id 123
+board = jira.board(123)
+#Find the active sprints for a board
+sprints = jira.sprints(board.id, state='active')
 for sprint in sprints:
     print('{}: {}'.format(sprint.id, sprint.name))
+
+
 
 # Find all the issues that I am currently working on
 issues = jira.search_issues('assignee = currentUser() and status not in (Closed, Resolved)', maxResults=100)
