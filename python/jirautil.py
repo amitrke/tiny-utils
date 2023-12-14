@@ -1,6 +1,7 @@
 # BEGIN: 5j8d9f3b4c5e
 import os
 from jira import JIRA
+from datetime import datetime, timedelta
 
 options = {
     'server': os.environ.get('JIRA_SERVER_URL')
@@ -21,8 +22,13 @@ project = jira.project('JRA')
 # for sprint in sprints:
 #     print('{}: {}'.format(sprint.id, sprint.name))
 
-#Jira Agile board id 123
-board = jira.board(123)
+#Jira Agile boards for a project
+boards = jira.boards(project.key)
+boardId = 123
+
+#Filter the boards to find the one we want
+board = next(board for board in boards if board.id == boardId)
+
 #Find the active sprints for a board
 sprints = jira.sprints(board.id, state='active')
 for sprint in sprints:
@@ -48,8 +54,35 @@ for issue in issues:
     
     
 # Function to add a worklog entry to an issue
-def add_worklog(issue, timeSpentSeconds, comment):
-    jira.add_worklog(issue, timeSpentSeconds=timeSpentSeconds, comment=comment)
+# Calculate the start time (yesterday at 8 am)
+start_time = datetime.now() - timedelta(days=1)
+start_time = start_time.replace(hour=8, minute=0, second=0, microsecond=0)
+
+# Convert the start time to JIRA's time format
+start_time_str = start_time.strftime('%Y-%m-%dT%H:%M:%S.000%z')
+
+# Log work for the issue
+add_worklog(issue, timeSpentSeconds, comment, started=start_time_str)
+
+def add_worklog(issue, time_spent_seconds, comment, started):
+    """
+    Adds a worklog entry to an issue in JIRA if no worklog was present for the issue for the date of started.
+
+    Parameters:
+    - issue: The JIRA issue object to add the worklog to.
+    - time_spent_seconds: The time spent on the issue in seconds.
+    - comment: The comment for the worklog entry.
+    - started: The start time of the worklog entry in JIRA's time format.
+
+    Returns:
+    - None
+    """
+    worklogs = jira.worklogs(issue)
+    for worklog in worklogs:
+        if worklog.started[:10] == started[:10]:
+            return  # Worklog already exists for the date of started
+
+    jira.add_worklog(issue, timeSpentSeconds=time_spent_seconds, comment=comment, started=started)
     
 
 # END: 5j8d9f3b4c5e
