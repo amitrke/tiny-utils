@@ -31,16 +31,6 @@ def add_worklog(issue: 'JIRA.Issue', time_spent_hours: float, started: str, comm
             return  # Worklog already exists for the date of started
 
     jira.add_worklog(issue, timeSpentSeconds=time_spent_seconds, comment=comment, started=started)
-    
-
-# Usage examples:
-issue = jira.issue('JRA-9')
-print_issue_details(issue)
-
-project_key = 'JRA'
-print_active_sprints(project_key)
-
-print_assigned_issues()
 
 options = {
     'server': os.environ.get('JIRA_SERVER_URL')
@@ -128,4 +118,25 @@ if hoursLoggedToday < 8:
             
             # Update the hours logged today
             hoursLoggedToday += timeToLog
+
+if hoursLoggedYesterday < 8:
+    # Sort the issues by the number of worklog entries
+    inProgressIssues.sort(key=lambda issue: len(jira.worklogs(issue)), reverse=True)
+    for issue in inProgressIssues:
+        if hoursLoggedYesterday >= 8:
+            break
+        
+        # Calculate the time remaining for the issue
+        timeRemaining = issue.fields.timeoriginalestimate - issue.fields.timespent
+        if timeRemaining > 0:
+            # Calculate the time to log for the issue
+            timeToLog = min(8 - hoursLoggedYesterday, timeRemaining)
+            
+            #Log the time for the issue starting 8 am yesterday
+            started = datetime.now().replace(hour=8, minute=0, second=0, microsecond=0).isoformat()
+            started = (datetime.now() - timedelta(days=1)).replace(hour=8, minute=0, second=0, microsecond=0).isoformat()
+            add_worklog(issue, timeToLog, started)
+            
+            # Update the hours logged yesterday
+            hoursLoggedYesterday += timeToLog
 
