@@ -11,40 +11,27 @@ email = os.environ.get('JIRA_EMAIL_ADDRESS')
 api_token = os.environ.get('JIRA_API_TOKEN')
 jira = JIRA(options, basic_auth=(email, api_token))
 
-def print_issue_details(issue):
-    print(issue.fields.project.key)            # 'JRA'
-    print(issue.fields.issuetype.name)         # 'New Feature'
-    print(issue.fields.reporter.displayName)   # 'Mike Cannon-Brookes [Atlassian]'
+def add_worklog(issue: 'JIRA.Issue', time_spent_hours: float, started: str, comment: str = '') -> None:
+    """
+    Adds a worklog entry to an issue in JIRA if no worklog was present for the issue for the date of started.
 
-def print_active_sprints(project_key):
-    boards = jira.boards(project_key)
-    boardId = 123
+    Parameters:
+    - issue: The JIRA issue object to add the worklog to.
+    - time_spent_hours: The time spent on the issue in hours.
+    - started: The start time of the worklog entry in JIRA's time format.
+    - comment: The comment for the worklog entry. (optional)
 
-    board = next(board for board in boards if board.id == boardId)
+    Returns:
+    - None
+    """
+    time_spent_seconds = int(time_spent_hours * 3600)  # Convert hours to seconds
+    worklogs = jira.worklogs(issue)
+    for worklog in worklogs:
+        if worklog.started[:10] == started[:10]:
+            return  # Worklog already exists for the date of started
 
-    sprints = jira.sprints(board.id, state='active')
-    for sprint in sprints:
-        print('{}: {}'.format(sprint.id, sprint.name))
-
-def print_assigned_issues():
-    issues = jira.search_issues('assignee = currentUser() and status not in (Closed, Resolved)', maxResults=100)
-    for issue in issues:
-        print('{}: {}'.format(issue.key, issue.fields.summary))
-        worklogs = jira.worklogs(issue)
-        if worklogs:
-            worklog = worklogs[-1]
-            print('  Last worklog: {} - {}'.format(worklog.author, worklog.comment))
-            if worklog.started[:10] == datetime.now().strftime('%Y-%m-%d'):
-                print('  Last worklog was made today')
-            else:
-                print('  Last worklog was not made today')
-            yesterday = datetime.now() - timedelta(days=1)
-            if worklog.started[:10] == yesterday.strftime('%Y-%m-%d'):
-                print('  Last worklog was made yesterday')
-            else:
-                print('  Last worklog was not made yesterday')
-        else:
-            print('  No worklog entries')
+    jira.add_worklog(issue, timeSpentSeconds=time_spent_seconds, comment=comment, started=started)
+    
 
 # Usage examples:
 issue = jira.issue('JRA-9')
@@ -69,11 +56,6 @@ print(issue.fields.issuetype.name)         # 'New Feature'
 print(issue.fields.reporter.displayName)   # 'Mike Cannon-Brookes [Atlassian]'
 
 project = jira.project('JRA')
-#Find the active sprints for a project
-# sprints = jira.sprints(project.key, state='active')
-# for sprint in sprints:
-#     print('{}: {}'.format(sprint.id, sprint.name))
-
 #Jira Agile boards for a project
 boards = jira.boards(project.key)
 boardId = 123
@@ -83,88 +65,67 @@ board = next(board for board in boards if board.id == boardId)
 
 #Find the active sprints for a board
 sprints = jira.sprints(board.id, state='active')
-for sprint in sprints:
-    print('{}: {}'.format(sprint.id, sprint.name))
-
-
-
 # Find all the issues that I am currently working on
 issues = jira.search_issues('assignee = currentUser() and status not in (Closed, Resolved)', maxResults=100)
+
+hoursLoggedToday = 0
+hoursLoggedYesterday = 0
+inProgressIssues = []
+prefferedIssuesForWorklog = []
+
 for issue in issues:
     print('{}: {}'.format(issue.key, issue.fields.summary))
     # Print the last worklog entry
     worklogs = jira.worklogs(issue)
-    options = {
-        'server': os.environ.get('JIRA_SERVER_URL')
-    }
 
-    email = os.environ.get('JIRA_EMAIL_ADDRESS')
-    api_token = os.environ.get('JIRA_API_TOKEN')
-    jira = JIRA(options, basic_auth=(email, api_token))
-        issues = jira.search_issues('assignee = currentUser() and status not in (Closed, Resolved)', maxResults=100)
-        for issue in issues:
-            print('{}: {}'.format(issue.key, issue.fields.summary))
-            worklogs = jira.worklogs(issue)
-            if worklogs:
-                worklog = worklogs[-1]
-                print('  Last worklog: {} - {}'.format(worklog.author, worklog.comment))
-                if worklog.started[:10] == datetime.now().strftime('%Y-%m-%d'):
-                    print('  Last worklog was made today')
-                else:
-                    print('  Last worklog was not made today')
-                yesterday = datetime.now() - timedelta(days=1)
-                if worklog.started[:10] == yesterday.strftime('%Y-%m-%d'):
-                    print('  Last worklog was made yesterday')
-                else:
-                    print('  Last worklog was not made yesterday')
-            else:
-                print('  No worklog entries')
+    print('{}: {}'.format(issue.key, issue.fields.summary))
+    worklogs = jira.worklogs(issue)
 
-    # Usage examples:
-    issue = jira.issue('JRA-9')
-    print_issue_details(issue)
+    if issue.fields.status.name == 'In Progress':
+        inProgressIssues.append(issue)
 
-    project_key = 'JRA'
-    print_active_sprints(project_key)
-
-    print_assigned_issues()
-
+    if worklogs:
+        worklog = worklogs[-1]
+        print('  Last worklog: {} - {}'.format(worklog.author, worklog.comment))
+        
+        # Calculate the hours logged today
+        today = datetime.now().date()
+        for worklog in worklogs:
+            if worklog.started[:10] == str(today):
+                hoursLoggedToday += worklog.timeSpentSeconds / 3600
+        
+        # Calculate the hours logged yesterday
+        yesterday = today - timedelta(days=1)
+        for worklog in worklogs:
+            if worklog.started[:10] == str(yesterday):
+                hoursLoggedYesterday += worklog.timeSpentSeconds / 3600
+    else:
+        print('  No worklog entries')
+        
     #Print if the issue does not have a target end date
     if not issue.fields.duedate:
         print('  No target end date')
     
-    
-# Function to add a worklog entry to an issue
-# Calculate the start time (yesterday at 8 am)
-start_time = datetime.now() - timedelta(days=1)
-start_time = start_time.replace(hour=8, minute=0, second=0, microsecond=0)
+print('  Hours logged today: {}'.format(hoursLoggedToday))
+print('  Hours logged yesterday: {}'.format(hoursLoggedYesterday))
 
-# Convert the start time to JIRA's time format
-start_time_str = start_time.strftime('%Y-%m-%dT%H:%M:%S.000%z')
+if hoursLoggedToday < 8:
+    # Sort the issues by the number of worklog entries
+    inProgressIssues.sort(key=lambda issue: len(jira.worklogs(issue)), reverse=True)
+    for issue in inProgressIssues:
+        if hoursLoggedToday >= 8:
+            break
+        
+        # Calculate the time remaining for the issue
+        timeRemaining = issue.fields.timeoriginalestimate - issue.fields.timespent
+        if timeRemaining > 0:
+            # Calculate the time to log for the issue
+            timeToLog = min(8 - hoursLoggedToday, timeRemaining)
+            
+            #Log the time for the issue starting 8 am today
+            started = datetime.now().replace(hour=8, minute=0, second=0, microsecond=0).isoformat()
+            add_worklog(issue, timeToLog, started)
+            
+            # Update the hours logged today
+            hoursLoggedToday += timeToLog
 
-# Log work for the issue
-add_worklog(issue, timeSpentSeconds, comment, started=start_time_str)
-
-def add_worklog(issue: 'JIRA.Issue', time_spent_hours: float, started: str, comment: str = '') -> None:
-    """
-    Adds a worklog entry to an issue in JIRA if no worklog was present for the issue for the date of started.
-
-    Parameters:
-    - issue: The JIRA issue object to add the worklog to.
-    - time_spent_hours: The time spent on the issue in hours.
-    - started: The start time of the worklog entry in JIRA's time format.
-    - comment: The comment for the worklog entry. (optional)
-
-    Returns:
-    - None
-    """
-    time_spent_seconds = int(time_spent_hours * 3600)  # Convert hours to seconds
-    worklogs = jira.worklogs(issue)
-    for worklog in worklogs:
-        if worklog.started[:10] == started[:10]:
-            return  # Worklog already exists for the date of started
-
-    jira.add_worklog(issue, timeSpentSeconds=time_spent_seconds, comment=comment, started=started)
-    
-
-# END: 5j8d9f3b4c5e
