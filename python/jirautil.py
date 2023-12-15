@@ -2,6 +2,10 @@ import os
 from jira import JIRA
 from datetime import datetime, timedelta
 from typing import Optional
+from datetime import datetime, timedelta
+import pytz
+import pytz
+from datetime import datetime
 
 options = {
     'server': os.environ.get('JIRA_SERVER_URL')
@@ -113,7 +117,8 @@ if hoursLoggedToday < 8:
             timeToLog = min(8 - hoursLoggedToday, timeRemaining)
             
             #Log the time for the issue starting 8 am today
-            started = datetime.now().replace(hour=8, minute=0, second=0, microsecond=0).isoformat()
+            pacific_tz = pytz.timezone('US/Pacific')
+            started = datetime.now(pacific_tz).replace(hour=8, minute=0, second=0, microsecond=0).isoformat()
             add_worklog(issue, timeToLog, started)
             
             # Update the hours logged today
