@@ -1,4 +1,6 @@
+pytest
 GitPython
 pysnow
 jira
 pika
+python-magic-bin
