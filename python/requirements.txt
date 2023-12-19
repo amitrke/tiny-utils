@@ -1,3 +1,4 @@
+pytest
 GitPython
 pysnow
 jira
