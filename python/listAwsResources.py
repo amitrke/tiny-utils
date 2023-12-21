@@ -5,6 +5,10 @@ import json
 with open('python/config.json') as json_file:
     config = json.load(json_file)
 
+#Get current AWS account ID
+sts = boto3.client('sts')
+accountId = sts.get_caller_identity()['Account']
+
 primaryRegion = config.get('AWS')['region']['primary']
 secondaryRegion = config.get('AWS')['region']['secondary']
 
@@ -22,7 +26,7 @@ def getBucketList(region: str):
 def getS3MultiRegionAccessPointList(region: str):
     s3Control = boto3.client('s3control', region_name=region)
     accessPointList = []
-    for accessPoint in s3Control.list_access_points()['AccessPointList']:
+    for accessPoint in s3Control.list_multi_region_access_points(AccountId=accountId)['AccessPoints']:
         accessPointList.append(accessPoint['Name'])
     return accessPointList
 
