@@ -2,18 +2,20 @@ import boto3
 import json
 
 # Read config.json file
-with open('config.json') as json_file:
+with open('python/config.json') as json_file:
     config = json.load(json_file)
 
-primaryRegion = config.get('AWS').get('region').get('primary')
-secondaryRegion = config.get('secondaryRegion')
+primaryRegion = config.get('AWS')['region']['primary']
+secondaryRegion = config.get('AWS')['region']['secondary']
 
 # Get List of all S3 buckets that start with 'mybucket'
 def getBucketList(region: str):
     s3 = boto3.client('s3', region_name=region)
+    bucketPrefix = config.get('AWS')['s3']['bucketPrefix']
     bucketList = []
     for bucket in s3.list_buckets()['Buckets']:
-        bucketList.append(bucket['Name'])
+        if bucket['Name'].startswith(bucketPrefix):
+            bucketList.append(bucket['Name'])
     return bucketList
 
 print(getBucketList(primaryRegion))
