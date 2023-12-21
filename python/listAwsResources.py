@@ -20,12 +20,11 @@ def getBucketList(region: str):
 
 #Function to get list of all S3 Multi Region Access Points
 def getS3MultiRegionAccessPointList(region: str):
-    s3 = boto3.client('s3', region_name=region)
-    multiRegionAccessPointList = []
-    for multiRegionAccessPoint in s3.list_access_points()['AccessPointList']:
-        if multiRegionAccessPoint['Name'].startswith('multi-region'):
-            multiRegionAccessPointList.append(multiRegionAccessPoint['Name'])
-    return multiRegionAccessPointList
+    s3Control = boto3.client('s3control', region_name=region)
+    accessPointList = []
+    for accessPoint in s3Control.list_access_points()['AccessPointList']:
+        accessPointList.append(accessPoint['Name'])
+    return accessPointList
 
 print("S3 Buckets:")
 print(getBucketList(primaryRegion))
