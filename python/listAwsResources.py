@@ -17,7 +17,11 @@ def getVpcList(region: str):
     ec2 = boto3.client('ec2', region_name=region)
     vpcList = []
     for vpc in ec2.describe_vpcs()['Vpcs']:
-        vpcList.append(vpc['VpcId'])
+        #If tag 'Name' exists, append to list
+        if 'Tags' in vpc:
+            for tag in vpc['Tags']:
+                if tag['Key'] == 'Name':
+                    vpcList.append(tag['Value'])
     return vpcList
 
 # Get List of all S3 buckets that start with 'mybucket'
