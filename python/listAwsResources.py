@@ -12,6 +12,14 @@ accountId = sts.get_caller_identity()['Account']
 primaryRegion = config.get('AWS')['region']['primary']
 secondaryRegion = config.get('AWS')['region']['secondary']
 
+# Get List of all VPCs
+def getVpcList(region: str):
+    ec2 = boto3.client('ec2', region_name=region)
+    vpcList = []
+    for vpc in ec2.describe_vpcs()['Vpcs']:
+        vpcList.append(vpc['VpcId'])
+    return vpcList
+
 # Get List of all S3 buckets that start with 'mybucket'
 def getBucketList(region: str):
     s3 = boto3.client('s3', region_name=region)
@@ -32,6 +40,10 @@ def getS3MultiRegionAccessPointList(region: str):
             "alias": accessPoint['Alias']
         })
     return accessPointList
+
+print("VPCs:")
+print(getVpcList(primaryRegion))
+print(getVpcList(secondaryRegion))
 
 print("S3 Buckets:")
 print(getBucketList(primaryRegion))
