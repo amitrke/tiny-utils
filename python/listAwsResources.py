@@ -21,7 +21,13 @@ def getVpcList(region: str):
         if 'Tags' in vpc:
             for tag in vpc['Tags']:
                 if tag['Key'] == 'Name':
-                    vpcList.append(tag['Value'])
+                    vpcList.append(
+                        {
+                            "id": vpc['VpcId'],
+                            "name": tag['Value'],
+                            "cidrBlockAssociationSet": vpc['CidrBlockAssociationSet']
+                        }
+                    )
     return vpcList
 
 # Get List of all S3 buckets that start with 'mybucket'
@@ -46,7 +52,9 @@ def getS3MultiRegionAccessPointList(region: str):
     return accessPointList
 
 print("VPCs:")
+print("Primary Region: " + primaryRegion)
 print(getVpcList(primaryRegion))
+print("Secondary Region: " + secondaryRegion)
 print(getVpcList(secondaryRegion))
 
 print("S3 Buckets:")
