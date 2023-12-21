@@ -1,5 +1,12 @@
-primaryRegion = 'us-east-1'
-secondaryRegion = 'us-west-2'
+import boto3
+import json
+
+# Read config.json file
+with open('config.json') as json_file:
+    config = json.load(json_file)
+
+primaryRegion = config.get('AWS').get('region').get('primary')
+secondaryRegion = config.get('secondaryRegion')
 
 # Get List of all S3 buckets that start with 'mybucket'
 def getBucketList(region: str):

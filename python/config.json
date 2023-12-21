@@ -1,0 +1,11 @@
+{
+    "AWS": {
+        "region": {
+            "primary": "us-east-1",
+            "secondary": "us-west-2"
+        },
+        "s3": {
+            "bucketPrefix": "my-bucket"
+        }
+    }
+}
