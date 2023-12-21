@@ -27,7 +27,12 @@ def getS3MultiRegionAccessPointList(region: str):
     s3Control = boto3.client('s3control', region_name=region)
     accessPointList = []
     for accessPoint in s3Control.list_multi_region_access_points(AccountId=accountId)['AccessPoints']:
-        accessPointList.append(accessPoint['Name'])
+        accessPointList.append({
+            "name": accessPoint['Name'],
+            "arn": accessPoint['Arn'],
+            "status": accessPoint['Status'],
+            "alias": accessPoint['Alias']
+        })
     return accessPointList
 
 print("S3 Buckets:")
