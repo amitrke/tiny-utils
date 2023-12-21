@@ -29,8 +29,6 @@ def getS3MultiRegionAccessPointList(region: str):
     for accessPoint in s3Control.list_multi_region_access_points(AccountId=accountId)['AccessPoints']:
         accessPointList.append({
             "name": accessPoint['Name'],
-            "arn": accessPoint['Arn'],
-            "status": accessPoint['Status'],
             "alias": accessPoint['Alias']
         })
     return accessPointList
@@ -39,4 +37,4 @@ print("S3 Buckets:")
 print(getBucketList(primaryRegion))
 
 print("S3 Multi Region Access Points:")
-print(getS3MultiRegionAccessPointList(primaryRegion))
+print(getS3MultiRegionAccessPointList(secondaryRegion))
