@@ -6,6 +6,9 @@
         },
         "s3": {
             "bucketPrefix": "my-bucket"
+        },
+        "ecr": {
+            "repositoryPrefix": "my-repo"
         }
     }
 }
