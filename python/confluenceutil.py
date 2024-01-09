@@ -28,6 +28,11 @@ def get_pages_by_space(confluence: Confluence, space: str, limit: int = 500) -> 
     )
     return pages
 
+def save_page_to_file(page: dict, filename: str) -> None:
+    """Saves a page to a file"""
+    body = page['body']['storage']['value']
+    commonutils.save_to_file(body, filename)
+
 def get_page_by_id(confluence: Confluence, page_id: str) -> dict:
     """Returns a page by ID"""
     page = confluence.get_page_by_id(
@@ -35,3 +40,13 @@ def get_page_by_id(confluence: Confluence, page_id: str) -> dict:
         expand='body.storage'
     )
     return page
+
+def update_page_from_file(confluence: Confluence, page_id: str, filename: str) -> None:
+    """Updates a page from a file"""
+    body = commonutils.read_from_file(filename)
+    confluence.update_page(
+        page_id=page_id,
+        body=body,
+        type='page',
+        representation='storage'
+    )
