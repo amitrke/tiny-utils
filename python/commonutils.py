@@ -15,5 +15,9 @@ def get_previous_weekday(inputDate: datetime.date) -> datetime.date:
 def get_env_var(key: str) -> str:
     """Returns the value of an environment variable"""
     import os
-    print("Getting environment variable: " + key)
-    return os.environ[key]
+    try:
+        print("Getting environment variable: " + key)
+        return os.environ[key]
+    except KeyError:
+        print("Environment variable not found: " + key)
+        return None
