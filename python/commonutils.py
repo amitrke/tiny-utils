@@ -21,3 +21,16 @@ def get_env_var(key: str) -> str:
     except KeyError:
         print("Environment variable not found: " + key)
         return None
+
+def save_to_file(content: str, filename: str) -> None:
+    """Saves content to a file"""
+    print("Saving to file: " + filename)
+    with open(filename, 'w') as file:
+        file.write(content)
+
+def read_from_file(filename: str) -> str:
+    """Reads content from a file"""
+    print("Reading from file: " + filename)
+    with open(filename, 'r') as file:
+        content = file.read()
+        return content
