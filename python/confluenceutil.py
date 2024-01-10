@@ -41,10 +41,11 @@ def get_page_by_id(confluence: Confluence, page_id: str) -> dict:
     )
     return page
 
-def update_page_from_file(confluence: Confluence, page_id: str, filename: str) -> None:
+def update_page_from_file(confluence: Confluence, page_id: str, title: str, filename: str) -> None:
     """Updates a page from a file"""
     body = commonutils.read_from_file(filename)
     confluence.update_page(
+        title=title,
         page_id=page_id,
         body=body,
         type='page',
