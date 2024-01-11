@@ -6,30 +6,54 @@ class WaterfallPlanner:
         self.data = data
         self.config = config
         self.template = Template("""
+        {% macro macro_status(status) -%}
+        <div class="content-wrapper">
+            <p>{{ status }}</p>
+        </div>
+        {%- endmacro %}
+        {% macro macro_date(date) -%}
+        <div class="content-wrapper">
+            <p><time datetime="{{ date }}" /></p>
+        </div>
+        {%- endmacro %}
         <table>
             <tbody>
+                <tr>
+                    <th>Phase</th>
+                    <th>S.No</th>
+                    <th>Task</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                </tr>
             {% for phase in data %}
                 <tr>
                     <td><strong>{{ phase.title }}</strong></td>
-                    <td></td>
+                    <td><br /></td>
+                    <td><br /></td>
+                    <td><br /></td>
+                    <td><br /></td>
+                    <td><br /></td>
                 </tr>
                 {% for task in phase.tasks %}
                 {% set taskIndex = loop.index %}
                 <tr>
-                    <td>{{taskIndex}}</td>
+                    <td><br /></td>
+                    <td><strong>{{taskIndex}}</strong></td>
                     <td><strong>{{ task.title }}</strong></td>
-                    <td>{{ task.status }}</td>
-                    <td>{{ task.startDate }}</td>
-                    <td>{{ task.endDate }}</td>
+                    <td>{{ macro_date(task.startDate) }}</td>
+                    <td>{{ macro_date(task.endDate) }}</td>
+                    <td>{{ macro_status(task.status) }}</td>
                 </tr>
                 {% if task.tasks %}
                     {% for subtask in task.tasks %}
                         <tr>
+                            <td><br /></td>
                             <td>{{taskIndex}}.{{loop.index}}</td>
                             <td>{{ subtask.title }}</td>
-                            <td>{{ subtask.status }}</td>
-                            <td>{{ subtask.startDate }}</td>
-                            <td>{{ subtask.endDate }}</td>
+                            <td>{{ macro_date(subtask.startDate) }}</td>
+                            <td>{{ macro_date(subtask.endDate) }}</td>
+                            <td>{{ macro_status(subtask.status) }}</td>
                         </tr>
                     {% endfor %}
                 {% endif %}
@@ -87,7 +111,6 @@ class WaterfallPlanner:
                             subtask["duration"] = 1
                         subtask["endDate"] = self._datePlusDuration(subtask["startDate"], subtask["duration"])
                     task["endDate"] = task["tasks"][-1]["endDate"]
-
 
     def plan(self):
         self._updateTaskStartAndEndDates()

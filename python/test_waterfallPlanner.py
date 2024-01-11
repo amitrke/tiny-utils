@@ -1,7 +1,7 @@
 from waterfallPlanner import WaterfallPlanner
 
 def strip_whitespace(s):
-    return s.strip().replace('\n', '').replace(' ', '')
+    return s.strip().replace('\n', '').replace('  ', '')
 
 def test_waterfall_planner():
     # # Test case 1: Empty data and config
@@ -59,50 +59,128 @@ def test_waterfall_planner():
         <table>
             <tbody>
                 <tr>
-                    <td><strong>Phase1</strong></td>
+                    <td><strong>Phase 1</strong></td>
                     <td></td>
                 </tr>
                 <tr>
                     <td>1</td>
-                    <td><strong>Task1</strong></td>
+                    <td><strong>Task 1</strong></td>
                     <td>Completed</td>
-                    <td>2024-01-10</td>
-                    <td>2024-01-11</td>
+                    <td>
+                        <div class="content-wrapper">
+                            <p><time datetime="2024-01-10" /></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="content-wrapper">
+                            <p><time datetime="2024-01-11" /></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="content-wrapper">
+                            <p>Completed</p>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <td>2</td>
-                    <td><strong>Task2</strong></td>
-                    <td>InProgress</td>
-                    <td>2024-01-11</td>
-                    <td>2024-01-15</td>
+                    <td><strong>Task 2</strong></td>
+                    <td>In Progress</td>
+                    <td>
+                        <div class="content-wrapper">
+                            <p><time datetime="2024-01-11" /></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="content-wrapper">
+                            <p><time datetime="2024-01-15" /></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="content-wrapper">
+                            <p>In Progress</p>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <td>3</td>
-                    <td><strong>Task3</strong></td>
-                    <td>NotStarted</td>
-                    <td>2024-01-15</td>
-                    <td>2024-01-22</td>
+                    <td><strong>Task 3</strong></td>
+                    <td>Not Started</td>
+                    <td>
+                        <div class="content-wrapper">
+                            <p><time datetime="2024-01-15" /></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="content-wrapper">
+                            <p><time datetime="2024-01-22" /></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="content-wrapper">
+                            <p>Not Started</p>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <td>3.1</td>
-                    <td>Subtask1</td>
-                    <td>NotStarted</td>
-                    <td>2024-01-15</td>
-                    <td>2024-01-16</td>
+                    <td>Subtask 1</td>
+                    <td>Not Started</td>
+                    <td>
+                        <div class="content-wrapper">
+                            <p><time datetime="2024-01-15" /></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="content-wrapper">
+                            <p><time datetime="2024-01-16" /></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="content-wrapper">
+                            <p>Not Started</p>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <td>3.2</td>
-                    <td>Subtask2</td>
-                    <td>NotStarted</td>
-                    <td>2024-01-16</td>
-                    <td>2024-01-18</td>
+                    <td>Subtask 2</td>
+                    <td>Not Started</td>
+                    <td>
+                        <div class="content-wrapper">
+                            <p><time datetime="2024-01-16" /></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="content-wrapper">
+                            <p><time datetime="2024-01-18" /></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="content-wrapper">
+                            <p>Not Started</p>
+                        </div>
+                    </td>
                 </tr>
                 <tr>
                     <td>3.3</td>
-                    <td>Subtask3</td>
-                    <td>NotStarted</td>
-                    <td>2024-01-18</td>
-                    <td>2024-01-22</td>
+                    <td>Subtask 3</td>
+                    <td>Not Started</td>
+                    <td>
+                        <div class="content-wrapper">
+                            <p><time datetime="2024-01-18" /></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="content-wrapper">
+                            <p><time datetime="2024-01-22" /></p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="content-wrapper">
+                            <p>Not Started</p>
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>
