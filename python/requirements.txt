@@ -6,3 +6,4 @@ pika
 python-magic-bin
 boto3
 atlassian-python-api
+Jinja2
