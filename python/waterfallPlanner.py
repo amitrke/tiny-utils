@@ -5,17 +5,13 @@ class WaterfallPlanner:
     def __init__(self, data, config: dict):
         self.data = data
         self.config = config
-        self.template = Template("""
-        {% macro macro_status(status) -%}
-        <div class="content-wrapper">
-            <p>{{ status }}</p>
-        </div>
-        {%- endmacro %}
-        {% macro macro_date(date) -%}
-        <div class="content-wrapper">
-            <p><time datetime="{{ date }}" /></p>
-        </div>
-        {%- endmacro %}
+        self.template = Template("""{% macro macro_status(status) -%}
+<div class="content-wrapper">
+    <p>{{ status }}</p>
+</div>
+{%- endmacro %}{% macro macro_date(date) -%}<div class="content-wrapper">
+    <p><time datetime="{{ date }}" /></p>
+</div>{%- endmacro %}
         <table>
             <tbody>
                 <tr>
@@ -62,6 +58,9 @@ class WaterfallPlanner:
             </tbody>
         </table>
         """)
+
+    def setTemplate(self, template):
+        self.template = template
 
     def _datePlusDuration(self, date, duration):
         """Returns a new date that is the given date plus the given duration"""
