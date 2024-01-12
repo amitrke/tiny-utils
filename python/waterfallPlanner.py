@@ -18,14 +18,18 @@ class WaterfallPlanner:
             <p><time datetime="{{ date }}" /></p>
         </div>
         {%- endmacro %}
-        {% macro macro_td(content, is_strong, dictobj, dictkey) -%}
+        {% macro macro_td(content, is_strong, dictobj, dictkey, is_date) -%}
         <td>
             {% if is_strong %}<strong>{% endif %}
             {% if content %}
                 {{ content }}
             {% elif dictobj and dictkey %}
                 {% if dictkey in dictobj %}
-                    {{ dictobj[dictkey] }}
+                    {% if is_date %}
+                        {{ macro_date(dictobj[dictkey]) }}
+                    {% else %}
+                        {{ dictobj[dictkey] }}
+                    {% endif %}
                 {% endif %}
             {% else %}
                 <br />
@@ -38,8 +42,8 @@ class WaterfallPlanner:
             {{ macro_td(None) }}
             {{ macro_td(index, is_strong) }}
             {{ macro_td(None, is_strong, task, 'title') }}
-            {{ macro_td(None, is_strong, task, 'startDate') }}
-            {{ macro_td(None, is_strong, task, 'endDate') }}
+            {{ macro_td(None, is_strong, task, 'startDate', True) }}
+            {{ macro_td(None, is_strong, task, 'endDate', True) }}
             {{ macro_td(None, is_strong, task, 'status') }}
             {{ macro_td(None, False, task, 'notes') }}
         </tr>
