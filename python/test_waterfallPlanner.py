@@ -15,6 +15,43 @@ def test_waterfall_planner():
     data = [
         {
             "title": "Phase 1",
+            "tasks": [
+                {
+                    "title": "Task 1",
+                    "duration": 1,
+                    "status": "Completed"
+                },
+                {
+                    "title": "Task 2",
+                    "duration": 2,
+                    "status": "In Progress"
+                },
+                {
+                    "title": "Task 3",
+                    "duration": 3,
+                    "status": "Not Started",
+                    "tasks": [
+                        {
+                            "title": "Subtask 1",
+                            "duration": 1,
+                            "status": "Not Started"
+                        },
+                        {
+                            "title": "Subtask 2",
+                            "duration": 2,
+                            "status": "Not Started"
+                        },
+                        {
+                            "title": "Subtask 3",
+                            "duration": 3,
+                            "status": "Not Started"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "title": "Phase 2",
             "startDate": "2024-01-10",
             "tasks": [
                 {
@@ -57,134 +94,142 @@ def test_waterfall_planner():
     result = planner.plan()
     expectedResult = """
         <table>
-            <tbody>
-                <tr>
-                    <td><strong>Phase 1</strong></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td><strong>Task 1</strong></td>
-                    <td>Completed</td>
-                    <td>
-                        <div class="content-wrapper">
-                            <p><time datetime="2024-01-10" /></p>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="content-wrapper">
-                            <p><time datetime="2024-01-11" /></p>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="content-wrapper">
-                            <p>Completed</p>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td><strong>Task 2</strong></td>
-                    <td>In Progress</td>
-                    <td>
-                        <div class="content-wrapper">
-                            <p><time datetime="2024-01-11" /></p>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="content-wrapper">
-                            <p><time datetime="2024-01-15" /></p>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="content-wrapper">
-                            <p>In Progress</p>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td><strong>Task 3</strong></td>
-                    <td>Not Started</td>
-                    <td>
-                        <div class="content-wrapper">
-                            <p><time datetime="2024-01-15" /></p>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="content-wrapper">
-                            <p><time datetime="2024-01-22" /></p>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="content-wrapper">
-                            <p>Not Started</p>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>3.1</td>
-                    <td>Subtask 1</td>
-                    <td>Not Started</td>
-                    <td>
-                        <div class="content-wrapper">
-                            <p><time datetime="2024-01-15" /></p>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="content-wrapper">
-                            <p><time datetime="2024-01-16" /></p>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="content-wrapper">
-                            <p>Not Started</p>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>3.2</td>
-                    <td>Subtask 2</td>
-                    <td>Not Started</td>
-                    <td>
-                        <div class="content-wrapper">
-                            <p><time datetime="2024-01-16" /></p>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="content-wrapper">
-                            <p><time datetime="2024-01-18" /></p>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="content-wrapper">
-                            <p>Not Started</p>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>3.3</td>
-                    <td>Subtask 3</td>
-                    <td>Not Started</td>
-                    <td>
-                        <div class="content-wrapper">
-                            <p><time datetime="2024-01-18" /></p>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="content-wrapper">
-                            <p><time datetime="2024-01-22" /></p>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="content-wrapper">
-                            <p>Not Started</p>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        """
+    <tbody>
+        <tr>
+            <th>Phase </th>
+            <th>S.No </th>
+            <th>Task </th>
+            <th>Start Date </th>
+            <th>End Date </th>
+            <th>Status </th>
+            <th>Notes </th>
+        </tr>
+        <tr>
+            <td><strong> Phase 1</strong> </td> <td><br /> </td>
+            <td><br /> </td>
+            <td><br /> </td>
+            <td><br /> </td>
+            <td><br /> </td>
+            <td><br /> </td>
+        </tr>
+        <tr>
+            <td><br /> </td>
+            <td><strong> 1</strong> </td>
+            <td><strong> Task 1</strong> </td>
+            <td><strong></strong> </td>
+            <td><strong></strong> </td>
+            <td><strong> Completed</strong> </td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td><br /> </td>
+            <td><strong> 2</strong> </td>
+            <td><strong> Task 2</strong> </td>
+            <td><strong></strong> </td>
+            <td><strong></strong> </td>
+            <td><strong> In Progress</strong> </td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td><br /> </td>
+            <td><strong> 3</strong> </td>
+            <td><strong> Task 3</strong> </td>
+            <td><strong></strong> </td>
+            <td><strong></strong> </td>
+            <td><strong> Not Started</strong> </td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td><br /> </td>
+            <td>3.1 </td>
+            <td>Subtask 1 </td>
+            <td> </td>
+            <td> </td>
+            <td>Not Started </td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td><br /> </td>
+            <td>3.2 </td>
+            <td>Subtask 2 </td>
+            <td> </td>
+            <td> </td>
+            <td>Not Started </td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td><br /> </td>
+            <td>3.3 </td>
+            <td>Subtask 3 </td>
+            <td> </td>
+            <td> </td>
+            <td>Not Started </td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td><strong> Phase 2</strong> </td> } <td><br /> </td>
+            <td><br /> </td>
+            <td><br /> </td>
+            <td><br /> </td>
+            <td><br /> </td>
+            <td><br /> </td>
+        </tr>
+        <tr>
+            <td><br /> </td>
+            <td><strong> 1</strong> </td>
+            <td><strong> Task 1</strong> </td>
+            <td><strong> 2024-01-10</strong> </td>
+            <td><strong> 2024-01-11</strong> </td>
+            <td><strong> Completed</strong> </td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td><br /> </td>
+            <td><strong> 2</strong> </td>
+            <td><strong> Task 2</strong> </td>
+            <td><strong> 2024-01-11</strong> </td>
+            <td><strong> 2024-01-15</strong> </td>
+            <td><strong> In Progress</strong> </td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td><br /> </td>
+            <td><strong> 3</strong> </td>
+            <td><strong> Task 3</strong> </td>
+            <td><strong> 2024-01-15</strong> </td>
+            <td><strong> 2024-01-22</strong> </td>
+            <td><strong> Not Started</strong> </td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td><br /> </td>
+            <td>3.1 </td>
+            <td>Subtask 1 </td>
+            <td>2024-01-15 </td>
+            <td>2024-01-16 </td>
+            <td>Not Started </td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td><br /> </td>
+            <td>3.2 </td>
+            <td>Subtask 2 </td>
+            <td>2024-01-16 </td>
+            <td>2024-01-18 </td>
+            <td>Not Started </td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td><br /> </td>
+            <td>3.3 </td>
+            <td>Subtask 3 </td>
+            <td>2024-01-18 </td>
+            <td>2024-01-22 </td>
+            <td>Not Started </td>
+            <td> </td>
+        </tr>
+    </tbody>
+</table>"""
     strippedResult = strip_whitespace(result)
     strippedExpectedResult = strip_whitespace(expectedResult)
     assert strippedResult == strippedExpectedResult  # Replace None with the expected result

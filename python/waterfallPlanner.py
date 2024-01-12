@@ -1,17 +1,49 @@
 
 from jinja2 import Template
 import datetime
+from bs4 import BeautifulSoup as bs
+
 class WaterfallPlanner:
     def __init__(self, data, config: dict):
         self.data = data
         self.config = config
-        self.template = Template("""{% macro macro_status(status) -%}
-<div class="content-wrapper">
-    <p>{{ status }}</p>
-</div>
-{%- endmacro %}{% macro macro_date(date) -%}<div class="content-wrapper">
-    <p><time datetime="{{ date }}" /></p>
-</div>{%- endmacro %}
+        self.template = Template("""
+        {% macro macro_status(status) -%}
+        <div class="content-wrapper">
+            <p>{{ status }}</p>
+        </div>
+        {%- endmacro %}
+        {% macro macro_date(date) -%}
+        <div class="content-wrapper">
+            <p><time datetime="{{ date }}" /></p>
+        </div>
+        {%- endmacro %}
+        {% macro macro_td(content, is_strong, dictobj, dictkey) -%}
+        <td>
+            {% if is_strong %}<strong>{% endif %}
+            {% if content %}
+                {{ content }}
+            {% elif dictobj and dictkey %}
+                {% if dictkey in dictobj %}
+                    {{ dictobj[dictkey] }}
+                {% endif %}
+            {% else %}
+                <br />
+            {% endif %}
+            {% if is_strong %}</strong>{% endif %}
+        </td>
+        {%- endmacro %}
+        {% macro macro_task(task, index, is_strong) -%}
+        <tr>
+            {{ macro_td(None) }}
+            {{ macro_td(index, is_strong) }}
+            {{ macro_td(None, is_strong, task, 'title') }}
+            {{ macro_td(None, is_strong, task, 'startDate') }}
+            {{ macro_td(None, is_strong, task, 'endDate') }}
+            {{ macro_td(None, is_strong, task, 'status') }}
+            {{ macro_td(None, False, task, 'notes') }}
+        </tr>
+        {%- endmacro %}
         <table>
             <tbody>
                 <tr>
@@ -21,36 +53,24 @@ class WaterfallPlanner:
                     <th>Start Date</th>
                     <th>End Date</th>
                     <th>Status</th>
+                    <th>Notes</th>
                 </tr>
             {% for phase in data %}
                 <tr>
-                    <td><strong>{{ phase.title }}</strong></td>
-                    <td><br /></td>
-                    <td><br /></td>
-                    <td><br /></td>
-                    <td><br /></td>
-                    <td><br /></td>
+                    {{ macro_td(phase.title, True) }}
+                    {{ macro_td(None) }}
+                    {{ macro_td(None) }}
+                    {{ macro_td(None) }}
+                    {{ macro_td(None) }}
+                    {{ macro_td(None) }}
+                    {{ macro_td(None) }}         
                 </tr>
                 {% for task in phase.tasks %}
                 {% set taskIndex = loop.index %}
-                <tr>
-                    <td><br /></td>
-                    <td><strong>{{taskIndex}}</strong></td>
-                    <td><strong>{{ task.title }}</strong></td>
-                    <td>{{ macro_date(task.startDate) }}</td>
-                    <td>{{ macro_date(task.endDate) }}</td>
-                    <td>{{ macro_status(task.status) }}</td>
-                </tr>
+                {{ macro_task(task, taskIndex, True) }}
                 {% if task.tasks %}
                     {% for subtask in task.tasks %}
-                        <tr>
-                            <td><br /></td>
-                            <td>{{taskIndex}}.{{loop.index}}</td>
-                            <td>{{ subtask.title }}</td>
-                            <td>{{ macro_date(subtask.startDate) }}</td>
-                            <td>{{ macro_date(subtask.endDate) }}</td>
-                            <td>{{ macro_status(subtask.status) }}</td>
-                        </tr>
+                        {{ macro_task(subtask, taskIndex ~ '.' ~ loop.index, False) }}
                     {% endfor %}
                 {% endif %}
                 {% endfor %}
@@ -79,6 +99,8 @@ class WaterfallPlanner:
         for phase in self.data:
             #The start date of the phase is the start date of the first task in the phase
             #Date format: YYYY-MM-DD
+            if "startDate" not in phase:
+                continue
             phaseStartDate = phase["startDate"]
             for taskidx, task in enumerate(phase["tasks"]):
                 #If this is the first task in the phase, then the start date is the phase start date
@@ -111,7 +133,14 @@ class WaterfallPlanner:
                         subtask["endDate"] = self._datePlusDuration(subtask["startDate"], subtask["duration"])
                     task["endDate"] = task["tasks"][-1]["endDate"]
 
+    def _generateMarkup(self):
+        markup = self.template.render(data=self.data, config=self.config)
+        soup = bs(markup)
+        prettyHTML = soup.prettify()
+        return prettyHTML
+
     def plan(self):
         self._updateTaskStartAndEndDates()
-        return self.template.render(data=self.data, config=self.config)
+        return self._generateMarkup()
+        
         
