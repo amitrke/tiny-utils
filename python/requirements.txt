@@ -7,3 +7,4 @@ python-magic-bin
 boto3
 atlassian-python-api
 Jinja2
+beautifulsoup4
