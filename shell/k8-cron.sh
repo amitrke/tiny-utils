@@ -10,6 +10,13 @@ if [ -z "$1" ] || [ -z "$2" ]
     exit 1
 fi
 
+#Check if logged into AWS
+aws sts get-caller-identity > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+  echo "Please login to AWS"
+  exit 1
+fi
+
 CLUSTER_NAME="k8s-cluster"
 REGION="us-west-2"
 
