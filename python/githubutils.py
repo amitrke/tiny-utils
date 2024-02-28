@@ -7,8 +7,11 @@ repo_prefix = os.getenv('REPO_PREFIX')
 #Get github token from environment variable
 token = os.getenv('GITHUB_TOKEN')
 
+#Get github org from environment variable
+org = os.getenv('GITHUB_ORG')
+
 #Create GitCommon object
-gc = gitcommon(repo_prefix, token)
+gc = gitcommon.GitCommon(org=org, token=token)
 
 #Get all repos with the given prefix
 repos = gc.get_repos_by_name_prefix(repo_prefix)
