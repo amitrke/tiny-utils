@@ -1,14 +1,15 @@
 import os
 import gitcommon
+import commonutils
 
 #Get git repo name prefix from environment variable
-repo_prefix = os.getenv('REPO_PREFIX')
+repo_prefix = commonutils.get_env_var('REPO_PREFIX')
 
 #Get github token from environment variable
-token = os.getenv('GITHUB_TOKEN')
+token = commonutils.get_env_var('GITHUB_TOKEN')
 
 #Get github org from environment variable
-org = os.getenv('GITHUB_ORG')
+org = commonutils.get_env_var('GITHUB_ORG')
 
 #Create GitCommon object
 gc = gitcommon.GitCommon(org=org, token=token)
