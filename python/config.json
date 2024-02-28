@@ -10,5 +10,11 @@
         "ecr": {
             "repositoryPrefix": "my-repo"
         }
+    },
+    "Github": {
+        "organization": "my-org",
+        "repo-prefix": "repo-prefix",
+        "prApproveUsers": ["user1", "user2"],
+        "autoMerge": true
     }
 }
