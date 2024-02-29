@@ -1,15 +1,19 @@
-import os
+import json
 import gitcommon
 import commonutils
 
-#Get git repo name prefix from environment variable
-repo_prefix = commonutils.get_env_var('REPO_PREFIX')
+# Read config.json file
+with open('python/config.json') as json_file:
+    config = json.load(json_file)
+
+repo_prefix = config.get('Github')['repo-prefix']
 
 #Get github token from environment variable
 token = commonutils.get_env_var('GITHUB_TOKEN')
 
-#Get github org from environment variable
-org = commonutils.get_env_var('GITHUB_ORG')
+org = config.get('Github')['organization']
+prApprovedUsers = config.get('Github')['prApproveUsers']
+autoMerge = config.get('Github')['autoMerge']
 
 #Create GitCommon object
 gc = gitcommon.GitCommon(org=org, token=token)
@@ -21,9 +25,13 @@ repos = gc.get_repos_by_name_prefix(repo_prefix)
 for repo in repos:
     print(f"Processing repo: {repo.name}")
     #Get all PRs not approved
-    prs = gc.get_prs_not_approved(repo)
+    prs = gc.get_prs_not_approved(repo=repo, prApprovedUsers=prApprovedUsers)
     #Iterate over all PRs
     for pr in prs:
         print(f"Approving PR: {pr.title}")
         #Approve PR
         gc.approve_pr(pr)
+        if autoMerge:
+            print(f"Merging PR: {pr.title}")
+            #Merge PR
+            #gc.merge_pr(pr)

@@ -10,10 +10,11 @@ class GitCommon:
     def get_repos_by_name_prefix(self, prefix: str) -> list[Repository.Repository]:
         return [repo for repo in self.org.get_repos() if repo.name.startswith(prefix)]
     
-    def get_prs_not_approved(self, repo: Repository.Repository) -> list[PullRequest.PullRequest]:
+    def get_prs_not_approved(self, repo: Repository.Repository, prApprovedUsers: list[str]) -> list[PullRequest.PullRequest]:
         unapproved_prs = []
         for pr in repo.get_pulls(state='open'):
-            if pr.requested_reviewers and pr.requested_reviewers[0].login != self.client.get_user().login:
+            if pr.mergeable == False and pr.user.login in prApprovedUsers and \
+                pr.requested_reviewers and pr.requested_reviewers[0].login != self.client.get_user().login:
                 unapproved_prs.append(pr)
         return unapproved_prs
     
