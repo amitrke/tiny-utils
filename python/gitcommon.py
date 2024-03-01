@@ -13,8 +13,8 @@ class GitCommon:
     def get_prs_not_approved(self, repo: Repository.Repository, prApprovedUsers: list[str]) -> list[PullRequest.PullRequest]:
         unapproved_prs = []
         for pr in repo.get_pulls(state='open'):
-            if pr.mergeable == False and pr.user.login in prApprovedUsers and \
-                pr.requested_reviewers and pr.requested_reviewers[0].login != self.client.get_user().login:
+            if pr.mergeable == True and pr.mergeable_state == "blocked" and \
+                pr.user.login in prApprovedUsers and pr.requested_reviewers:
                 unapproved_prs.append(pr)
         return unapproved_prs
     
