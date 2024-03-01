@@ -34,4 +34,4 @@ for repo in repos:
         if autoMerge:
             print(f"Merging PR: {pr.title}")
             #Merge PR
-            #gc.merge_pr(pr)
+            gc.merge_pr(pr)
